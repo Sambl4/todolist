@@ -30,30 +30,30 @@ todoApp.controller('TodoListCtrl', function($scope, $http) {
 
 
     $scope.moveRight = function (todoItem) {
-    	console.log("moveRight     "+ todoItem.status + "   " + todoItem.id);
+    	console.log("moveRight     "+ todoItem.status + "   " + todoItem.id + "  " + todoItem);
 
     	
-    	if (todoItem.status === "todo") {
+    	if (todoItem.status === "statusdata-todo") {
     		// return todoItem = "inprogress";
     		console.log("1 => 2");
-            todoItem.status = "inprogress";
+            todoItem.status = "statusdata-inprogress";
 
-    	} else if (todoItem.status === "inprogress") {
+    	} else if (todoItem.status === "statusdata-inprogress") {
     		// return todoItem = "inprogress";
     		console.log("2 => 3");
-            todoItem.status = "test";
+            todoItem.status = "statusdata-test";
 
-		} else if (todoItem.status === "test") {
+		} else if (todoItem.status === "statusdata-test") {
     		// return todoItem = "inprogress";
     		console.log("3 => 4");
-            todoItem.status = "done";
-		} else if (todoItem.status === "done") {
+            todoItem.status = "statusdata-done";
+		} else if (todoItem.status === "statusdata-done") {
     		// return todoItem = "inprogress";
     		console.log("4 => remove");
             doneAndRemove(todoItem);
 		} 
 
-        $http.put('/todo', todoItem)
+        $http.put('/todo/' + todoItem.id, todoItem)
             .success(function(data) {
                 console.log(data);
             });
@@ -63,21 +63,26 @@ todoApp.controller('TodoListCtrl', function($scope, $http) {
     	console.log("moveLeft   " + todoItem.status + "   " + todoItem.id);
 
         
-    	if (todoItem.status === "inprogress") {
+    	if (todoItem.status === "statusdata-inprogress") {
     		// return todoItem = "inprogress";
     		console.log("2 => 1");
-            todoItem.status = "todo";
+            todoItem.status = "statusdata-todo";
 
-		} else if (todoItem.status === "test") {
+		} else if (todoItem.status === "statusdata-test") {
     		// return todoItem = "inprogress";
     		console.log("3 => 2");
-            todoItem.status = "inprogress";
+            todoItem.status = "statusdata-inprogress";
 
-		} else if (todoItem.status === "done") {
+		} else if (todoItem.status === "statusdata-done") {
     		// return todoItem = "inprogress";
     		console.log("4 => 3");
-            todoItem.status = "test";
-		} 
+            todoItem.status = "statusdata-test";
+		}
+
+        $http.put('/todo/' + todoItem.id, todoItem)
+            .success(function(data) {
+                console.log(data);
+            });
     };
 
    
@@ -86,7 +91,7 @@ todoApp.controller('TodoListCtrl', function($scope, $http) {
         console.log("BUTTON NEW DATA");
         var newData = {
             id: Date.now(),
-            status: "todo",
+            status: "statusdata-todo",
             name: $scope.todoName,
             deadline: $scope.todoDeadline,
             priority: $scope.todoPriority,
@@ -95,9 +100,10 @@ todoApp.controller('TodoListCtrl', function($scope, $http) {
 
         $http.post('/todo', newData)
             .success(function(data) {
+                $scope.todoCol.push(data);
                 console.log(data);
             });
-
+        
         // localStorage.setItem(newData.id, JSON.stringify(newData));
         // arr.push(JSON.parse(localStorage.getItem(newData.id)));
         // $scope.todoCol = arr;
@@ -108,16 +114,18 @@ todoApp.controller('TodoListCtrl', function($scope, $http) {
     // };
 
     $scope.doneAndRemove = function (todoItem) {
-        console.log(todoItem.id);
-        arr.indexOf(todoItem.id);
-        localStorage.removeItem(todoItem.id);
-        // console.log(arr[arr.indexOf(todoItem)]);
-         console.log(arr[arr.indexOf(todoItem)]);
+        console.log("delete" + todoItem.id);
+        // arr.indexOf(todoItem.id);
+        // localStorage.removeItem(todoItem.id);
+        // // console.log(arr[arr.indexOf(todoItem)]);
+        //  console.log(arr[arr.indexOf(todoItem)]);
         
+        $scope.todoCol.splice( $scope.todoCol.indexOf(todoItem),1);
 
-        // $http.delete('/todo/' + todoItem.id, {todo: {id:todoItem.id}})
-        //     .success(function(todoItem) {
-        // });
+        $http.delete('/todo/' + todoItem.id, todoItem)
+            .success(function(data) {
+                console.log(data);
+        });
 
         // $http.get('/todo')
         //     .success(function(data, status, headers, config) {

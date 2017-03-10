@@ -5,58 +5,31 @@ var path = require('path');
 var mongojs = require('mongojs');
 var mongoose = require('mongoose');
 
-var ObjectID = require('mongodb').ObjectID; 
-
-//var ObjectID = require('mongodb').ObjectID; //для конвертации id mongo, т.к. монго создает свои id
-
 var app = express(); // переменная, которая будет являться нашим сервером
 var db; // описываем переменную, которая будет видна во всем app  и будет ссылкой на базу данных
 app.use(bodyParser.json()); // чтобы парсить json который мы передаем в боди
 app.use(bodyParser.urlencoded({extended: true})); // чтабы парсить данные формы
 app.use(express.static(__dirname));
 
-
-// app.get('/', function(req, res) {       //описываем метод get, когда мы заходим на url: "/" нам на страницу отправляется hello
-//     res.sendFile(__dirname + "/index.html");
-// });
-
 app.get('/todo', function(req, res) {
     db.collection('todo').find().toArray(function(err, docs) {
         if(err) {
             console.log(err);
             return res.sendStatus(500);
-        };
-        res.send(docs)
+        }
+        res.send(docs);
     });
 });
 
 app.get('/todo/:id', function(req, res) {
-    //db.collection('todoArr').findOne({_id: ObjectID(req.params.id)}, function(err, doc) {
-        console.log(req.params);
     db.collection('todo').findOne({id:Number(req.params.id)}, function(err, doc) {
         if (err) {
             console.log(err);
             return res.sendStatus(500);
-        };
+        }
        return res.send(doc);
     });
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 app.post('/todo', function(req, res) {
     var todoItem = {
@@ -72,27 +45,10 @@ app.post('/todo', function(req, res) {
         if(err) {
             console.log(err);
             return res.sendStatus(500);
-        };
+        }
         res.send(todoItem);
     });
 });
-
-// app.put('/todo/:id', function(req, res) {
-//     db.collection('todo').updateOne(
-//         {id: Number(req.params.id)},
-//         // {priority: req.body.priority},
-//         {status: req.body.status},
-//         function(err, result) {
-//             if(err) {
-//                 console.log(err);
-//                 return res.sendStatus(500);
-//             };
-
-//             res.sendStatus(200);
-//         }
-//     );
-
-// });
 
 app.put('/todo/:id', function(req, res) {
     
@@ -110,12 +66,10 @@ app.put('/todo/:id', function(req, res) {
             if(err) {
                 console.log(err);
                 return res.sendStatus(500);
-            };
-
+            }
             res.sendStatus(200);
         }
     );
-
 });
 
 
@@ -125,13 +79,12 @@ app.put('/todo/:id', function(req, res) {
 
 app.delete('/todo/:id', function(req, res) {
     db.collection('todo').deleteOne(
-        // {id: Number(req.params.id)},
-        {_id: "todo"},
+        {id: Number(req.params.id)},
         function(err, result) {
             if(err) {
                 console.log(err);
                 return res.sendStatus(500);
-            };
+            }
             res.sendStatus(200);
         });
 });
@@ -156,5 +109,5 @@ MongoClient.connect('mongodb://sambl4todo:sambl4todopass@ds145379.mlab.com:45379
     
     app.listen(8080, function() {       //проект запустится только тогда, когда будет загружена базаданных
         console.log("server started");
-    }) 
+    });
 });
