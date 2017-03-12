@@ -17,6 +17,7 @@
             <input type="button" value="New task" ng-click="addFormVis = true"
                 ng-init="addFormVis = addFormVis ? 'true' : 'false' ">
             <p> {{ addFormVis }} </p>
+            <p> Connect: {{ checkConnection }} </p>
 
             <form class="formForAddTodo"
                     ng-class="{'formForAddTodoVisible' : addFormVis == true, 'formForAddTodoNone' : addFormVis == false }">
