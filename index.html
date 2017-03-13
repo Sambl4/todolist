@@ -17,36 +17,40 @@
 
                 <input type="button" class="btn" value="New task" ng-click="addFormVis = true"
                     ng-init="addFormVis = addFormVis ? 'true' : 'false' ">
-               <!--  <p> {{ addFormVis }} </p> 
-                <p> Connect: {{ checkConnection }} </p> -->
             </div>
 
             <form class="formForAddTodo"
                     ng-class="{'formForAddTodoVisible' : addFormVis == true, 'formForAddTodoNone' : addFormVis == false }">
+                
                 <p> <span>*</span>Name: </p>
                 <input type="text" ng-class="infoErr" placeholder="Enter name" ng-model="todoName">
+                
                 <p> <span>*</span>Deadline (Should be more than today): </p>
                 <input type="date" placeholder="Enter date" ng-class="infoErr" ng-model="todoDeadline">
+                
                 <p> <span>*</span>Priority: </p>
                 <select ng-model="todoPriority" ng-class="infoErr">
                     <option>Normal</option>
                     <option>Important</option>
                     <option>Very important</option>
                 </select>
+                
                 <p> Description: </p>
                 <textarea type="text" placeholder="Add description" ng-model="todoDescription"></textarea>
 
                 <input type="button" class="btn" value="Cancel" ng-click="addFormVis = false">
                 <input type="button" class="btn" value="Add new task" ng-click="addNew()" ng-mouseup="addFormVis = false">
+                
                 <p><span> * - Must be filled </span></p>
             </form>
+
             <div class="todoDesk">
-           <!--  <input type="text" ng-model="search"> -->
+            <!--  <input type="text" ng-model="search"> -->
                 <ul class="todoColomn"> 
                     <h4> To Do </h4>
                     <li ng-repeat="todoColItem in todoCol |  filter:'statusdata-todo' | orderBy: 'priorityStat'"
-                        
                         ng-class="{'priorityImpotant' : todoColItem.priority == 'Important', 'priorityVeryImpotant' : todoColItem.priority == 'Very important' }">
+
                         <h3> {{todoColItem.name}} </h3>
                         <p><b> Priority: {{ todoColItem.priority }} </b></p>
                         <p><b> Registered: </b> {{ todoColItem.id | date: "dd.MMM.yyyy   /   HH:mm:ss"  }} </p>
@@ -63,6 +67,7 @@
                     <h4> In progress </h4>
                     <li ng-repeat="todoColItem in todoCol |  filter:'statusdata-inprogress' | orderBy: 'priorityStat'"
                         ng-class="{'priorityImpotant' : todoColItem.priority == 'Important', 'priorityVeryImpotant' : todoColItem.priority == 'Very important' }">
+                        
                         <h3> {{todoColItem.name}} </h3>
                         <p><b> Priority:  {{ todoColItem.priority }} </b></p>
                         <p><b> Registered: </b> {{ Date.parse("todoColItem.id") }} </p>
@@ -80,6 +85,7 @@
                     <h4> Test </h4>
                     <li ng-repeat="todoColItem in todoCol |  filter:'statusdata-test' | orderBy: 'priorityStat'"
                         ng-class="{'priorityImpotant' : todoColItem.priority == 'Important', 'priorityVeryImpotant' : todoColItem.priority == 'Very important' }">
+                        
                         <h3> {{todoColItem.name}} </h3>
                         <p><b> Priority:  {{ todoColItem.priority }} </b></p>
                         <p><b> Registered: </b> {{ Date.parse("todoColItem.id") }} </p>
@@ -97,6 +103,7 @@
                     <h4> Done </h4>
                     <li ng-repeat="todoColItem in todoCol |  filter:'statusdata-done' | orderBy: 'priorityStat'"
                         ng-class="{'priorityImpotant' : todoColItem.priority == 'Important', 'priorityVeryImpotant' : todoColItem.priority == 'Very important' }">
+                        
                         <h3> {{todoColItem.name}} </h3>
                         <p><b> Priority:  {{ todoColItem.priority }} </b></p>
                         <p><b> Registered: </b> {{ Date.parse(todoColItem.id) }} </p>

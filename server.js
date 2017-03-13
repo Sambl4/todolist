@@ -4,9 +4,9 @@ var MongoClient = require('mongodb').MongoClient;    // импортируем �
 var path = require('path');
 var mongojs = require('mongojs');
 var mongoose = require('mongoose');
-// var checkConnection;
 var app = express(); // переменная, которая будет являться нашим сервером
 var db; // описываем переменную, которая будет видна во всем app  и будет ссылкой на базу данных
+
 app.use(bodyParser.json()); // чтобы парсить json который мы передаем в боди
 app.use(bodyParser.urlencoded({extended: true})); // чтабы парсить данные формы
 app.use(express.static(__dirname));
@@ -49,7 +49,6 @@ app.post('/todo', function(req, res) {
             return res.sendStatus(500);
         }
         res.send(todoItem);
-        // res.send(console.log(checkConnection));
     });
 });
 
@@ -76,11 +75,6 @@ app.put('/todo/:id', function(req, res) {
         }
     );
 });
-
-
-
-
-
 
 app.delete('/todo/:id', function(req, res) {
     db.collection('todo').deleteOne(
@@ -114,16 +108,15 @@ app.delete('/todo', function (req, res) {
 /*                                              */
 
 
-// MongoClient.connect('mongodb://localhost:27017/myTodo', function(err, database) {
+// MongoClient.connect('mongodb://localhost:27017/myTodo', function(err, database) { //локальная базаданных mongoDB
 MongoClient.connect('mongodb://sambl4todo:sambl4todopass@ds145379.mlab.com:45379/todolist', function(err, database) {
     if (err) {
-        // checkConnection = false;
         return console.log(err);
     }
+    
     db = database;
     
     app.listen(8080, function() {       //проект запустится только тогда, когда будет загружена базаданных
-        // checkConnection = true;
         console.log("server started");
     });
 });
