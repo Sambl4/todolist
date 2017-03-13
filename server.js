@@ -38,7 +38,9 @@ app.post('/todo', function(req, res) {
         name: req.body.name,
         deadline: req.body.deadline,
         priority: req.body.priority,
-        description: req.body.description
+        priorityStat: req.body.priorityStat,
+        description: req.body.description,
+        tmp: null
     };
 
     db.collection('todo').insert(todoItem, function (err, result) {
@@ -61,6 +63,7 @@ app.put('/todo/:id', function(req, res) {
             name: req.body.name,
             deadline: req.body.deadline,
             priority: req.body.priority,
+            priorityStat: req.body.priorityStat,
             description: req.body.description,
             tmp: null
         },

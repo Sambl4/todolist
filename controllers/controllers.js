@@ -15,7 +15,7 @@ todoApp.controller('TodoListCtrl', function($scope, $http) {
     var date = new Date;
     $scope.today = date;
 
-
+    
 
 
 
@@ -108,7 +108,7 @@ todoApp.controller('TodoListCtrl', function($scope, $http) {
             }));
             
             pushNewTodoInBD();
-        }, 3600000);
+        }, 60000*5); //update every 5 minute
     }
 
 
@@ -178,6 +178,17 @@ todoApp.controller('TodoListCtrl', function($scope, $http) {
    
 
     $scope.addNew = function () {
+        var todoPriorityFilter;
+
+        if ($scope.todoPriority == "Normal") {
+            $scope.todoPriorityFilter = 3;
+        } else if ($scope.todoPriority == "Very important") {
+            $scope.todoPriorityFilter = 1;
+        } else {
+            $scope.todoPriorityFilter = 2;
+        }
+
+
 
         var newData = {
             id: Date.now(),
@@ -185,10 +196,12 @@ todoApp.controller('TodoListCtrl', function($scope, $http) {
             name: $scope.todoName,
             deadline: $scope.todoDeadline,
             priority: $scope.todoPriority,
+            priorityStat: $scope.todoPriorityFilter,
             description: $scope.todoDescription,
             tmp: null
         };
 
+        if (newData.name != null && newData.deadline >= Date.now() && newData.priority != null) {
 
 /*              valid http post                     */
 /*--------------------------------------------------*/
@@ -215,11 +228,27 @@ todoApp.controller('TodoListCtrl', function($scope, $http) {
 /*                                                  */       
 /*--------------------------------------------------*/
         
+
+        $scope.infoErr = "";
+        $scope.todoName = null;
+        $scope.todoDeadline = null;
+        $scope.todoPriority = null;
+        $scope.todoDescription = null;
+
+        } else {
+           $scope.addFormVis = true;
+           $scope.infoErr = "infoErrClass";
+        }
+            
+
+
+        
     };
 
 
     $scope.doneAndRemove = function (todoItem) {
         console.log("delete" + todoItem.id);
+        
 
 
 /*              valid http delete                   */
@@ -245,7 +274,6 @@ todoApp.controller('TodoListCtrl', function($scope, $http) {
 /*                                                  */
         
         $scope.todoCol.splice( $scope.todoCol.indexOf(todoItem),1);
-
         localStorage.removeItem(todoItem.id);
 
 /*                                                  */        

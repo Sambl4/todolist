@@ -2,7 +2,7 @@
 <html ng-app="todoApp">
     <head>
         <link href="css/main.css" rel="stylesheet" />
-        <title>My HTML File</title>
+        <title>My TODO App</title>
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.1/angular.min.js"></script>
         
         <!-- Controllers -->
@@ -11,58 +11,66 @@
 
     <body>
         <div ng-controller="TodoListCtrl">
-            <h3> To Do List </h3>
-            <p> {{today | date:'dd / MM.yyyy'}} </p>
+            <div class="infoBlock">
+                <h3> To Do List </h3>
+                <p> {{today | date:'dd / MM.yyyy'}} </p>
 
-            <input type="button" value="New task" ng-click="addFormVis = true"
-                ng-init="addFormVis = addFormVis ? 'true' : 'false' ">
-            <p> {{ addFormVis }} </p>
-            <p> Connect: {{ checkConnection }} </p>
+                <input type="button" class="btn" value="New task" ng-click="addFormVis = true"
+                    ng-init="addFormVis = addFormVis ? 'true' : 'false' ">
+               <!--  <p> {{ addFormVis }} </p> 
+                <p> Connect: {{ checkConnection }} </p> -->
+            </div>
 
             <form class="formForAddTodo"
                     ng-class="{'formForAddTodoVisible' : addFormVis == true, 'formForAddTodoNone' : addFormVis == false }">
-                <p> Name: </p>
-                <input type="text" placeholder="Enter name" ng-model="todoName">
-                <p> Deadline: </p>
-                <input type="date" placeholder="Enter date" ng-model="todoDeadline">
-                <p> Priority: </p>
-                <input type="number" placeholder="Enter priority" ng-model="todoPriority">
+                <p> <span>*</span>Name: </p>
+                <input type="text" ng-class="infoErr" placeholder="Enter name" ng-model="todoName">
+                <p> <span>*</span>Deadline (Should be more than today): </p>
+                <input type="date" placeholder="Enter date" ng-class="infoErr" ng-model="todoDeadline">
+                <p> <span>*</span>Priority: </p>
+                <select ng-model="todoPriority" ng-class="infoErr">
+                    <option>Normal</option>
+                    <option>Important</option>
+                    <option>Very important</option>
+                </select>
                 <p> Description: </p>
-                <textarea type="text" placeholder="Enter date" ng-model="todoDescription"></textarea>
+                <textarea type="text" placeholder="Add description" ng-model="todoDescription"></textarea>
 
-                <input type="button" value="Cancel" ng-click="addFormVis = false">
-                <input type="button" value="Add new task" ng-click="addNew()" ng-mouseup="addFormVis = false">
-
+                <input type="button" class="btn" value="Cancel" ng-click="addFormVis = false">
+                <input type="button" class="btn" value="Add new task" ng-click="addNew()" ng-mouseup="addFormVis = false">
+                <p><span> * - Must be filled </span></p>
             </form>
             <div class="todoDesk">
-                
            <!--  <input type="text" ng-model="search"> -->
                 <ul class="todoColomn"> 
                     <h4> To Do </h4>
-
-                    <li ng-repeat="todoColItem in todoCol |  filter:'statusdata-todo'">
+                    <li ng-repeat="todoColItem in todoCol |  filter:'statusdata-todo' | orderBy: 'priorityStat'"
+                        
+                        ng-class="{'priorityImpotant' : todoColItem.priority == 'Important', 'priorityVeryImpotant' : todoColItem.priority == 'Very important' }">
                         <h3> {{todoColItem.name}} </h3>
-                        <p><b> Priority: </b> {{ todoColItem.priority }} </p>
+                        <p><b> Priority: {{ todoColItem.priority }} </b></p>
                         <p><b> Registered: </b> {{ todoColItem.id | date: "dd.MMM.yyyy   /   HH:mm:ss"  }} </p>
                         <p><b> Deadline: </b> {{ todoColItem.deadline | date: "dd.MMM.yyyy   /   HH:mm:ss"  }} </p>
-                        <p><b> Time in progress </b> {{ Date.now() - todoColItem.id | date: "dd.MMM.yyyy   /   HH:mm:ss"}} </p>
-                        <p><b> Time left: </b> {{ ( Date.parse(todoColItem.deadline) - Date.parse(todoColItem.id))/ 1000*3600*24 | date: "dd.MMM.yyyy   /   HH:mm:ss" }} </p>
+                        <!-- <p><b> Time in progress </b> {{ Date.now() - todoColItem.id | date: "dd.MMM.yyyy   /   HH:mm:ss"}} </p> -->
+                        <!-- <p><b> Time left: </b> {{ ( Date.parse(todoColItem.deadline) - Date.parse(todoColItem.id))/ 1000*3600*24 | date: "dd.MMM.yyyy   /   HH:mm:ss" }} </p> -->
                         <p><b> Description: </b> <textarea>{{todoColItem.description}}</textarea></p>
-                        <p><b> Id: </b> {{todoColItem.id}} </p>                        <!-- надо скрыть -->
+                        <!-- <p><b> Id: </b> {{todoColItem.id}} </p>     -->
                         <input type="button" class="btnMoveRigth" value="Move on" ng-click="moveRight(todoColItem)">
                     </li>
                 </ul>
 
                 <ul class="inProgressColomn"> 
                     <h4> In progress </h4>
-                    <li ng-repeat="todoColItem in todoCol |  filter:'statusdata-inprogress'">
+                    <li ng-repeat="todoColItem in todoCol |  filter:'statusdata-inprogress' | orderBy: 'priorityStat'"
+                        ng-class="{'priorityImpotant' : todoColItem.priority == 'Important', 'priorityVeryImpotant' : todoColItem.priority == 'Very important' }">
                         <h3> {{todoColItem.name}} </h3>
-                        <p><b> Priority: </b> {{ todoColItem.priority }} </p>
+                        <p><b> Priority:  {{ todoColItem.priority }} </b></p>
                         <p><b> Registered: </b> {{ Date.parse("todoColItem.id") }} </p>
-                        <p><b> Time in progress </b> {{ today | date}} </p>
-                        <p><b> Time left: </b> {{  }} </p>
+                        <p><b> Deadline: </b> {{ todoColItem.deadline | date: "dd.MMM.yyyy   /   HH:mm:ss"  }} </p>
+                        <!-- <p><b> Time in progress </b> {{ today | date}} </p> -->
+                        <!-- <p><b> Time left: </b> {{  }} </p> -->
                         <p><b> Description: </b> <textarea>{{todoColItem.description}}</textarea></p>
-                        <p><b> Id: </b> {{todoColItem.id}} </p>               
+                        <!-- <p><b> Id: </b> {{todoColItem.id}} </p>                  -->
                         <input type="button" class="btnMoveLeft" value="Back down" ng-click="moveLeft(todoColItem)"> 
                         <input type="button" class="btnMoveRigth" value="Move on" ng-click="moveRight(todoColItem)">
                     </li>
@@ -70,14 +78,16 @@
 
                 <ul class="testColomn"> 
                     <h4> Test </h4>
-                    <li ng-repeat="todoColItem in todoCol |  filter:'statusdata-test'">
+                    <li ng-repeat="todoColItem in todoCol |  filter:'statusdata-test' | orderBy: 'priorityStat'"
+                        ng-class="{'priorityImpotant' : todoColItem.priority == 'Important', 'priorityVeryImpotant' : todoColItem.priority == 'Very important' }">
                         <h3> {{todoColItem.name}} </h3>
-                        <p><b> Priority: </b> {{ todoColItem.priority }} </p>
+                        <p><b> Priority:  {{ todoColItem.priority }} </b></p>
                         <p><b> Registered: </b> {{ Date.parse("todoColItem.id") }} </p>
-                        <p><b> Time in progress </b> {{ today | date}} </p>
-                        <p><b> Time left: </b> {{  }} </p>
+                        <p><b> Deadline: </b> {{ todoColItem.deadline | date: "dd.MMM.yyyy   /   HH:mm:ss"  }} </p>
+                        <!-- <p><b> Time in progress </b> {{ today | date}} </p> -->
+                        <!-- <p><b> Time left: </b> {{  }} </p> -->
                         <p><b> Description: </b> <textarea>{{todoColItem.description}}</textarea></p>
-                        <p><b> Id: </b> {{todoColItem.id}} </p>               
+                        <!-- <p><b> Id: </b> {{todoColItem.id}} </p>               -->
                         <input type="button" class="btnMoveLeft" value="Back down" ng-click="moveLeft(todoColItem)"> 
                         <input type="button" class="btnMoveRigth" value="Move on" ng-click="moveRight(todoColItem)">
                     </li>
@@ -85,14 +95,16 @@
 
                 <ul class="doneColomn"> 
                     <h4> Done </h4>
-                    <li ng-repeat="todoColItem in todoCol |  filter:'statusdata-done'">
+                    <li ng-repeat="todoColItem in todoCol |  filter:'statusdata-done' | orderBy: 'priorityStat'"
+                        ng-class="{'priorityImpotant' : todoColItem.priority == 'Important', 'priorityVeryImpotant' : todoColItem.priority == 'Very important' }">
                         <h3> {{todoColItem.name}} </h3>
-                        <p><b> Priority: </b> {{ todoColItem.priority }} </p>
+                        <p><b> Priority:  {{ todoColItem.priority }} </b></p>
                         <p><b> Registered: </b> {{ Date.parse(todoColItem.id) }} </p>
-                        <p><b> Time in progress </b> {{ today | date}} </p>
-                        <p><b> Time left: </b> {{  }} </p>
+                        <p><b> Deadline: </b> {{ todoColItem.deadline | date: "dd.MMM.yyyy   /   HH:mm:ss"  }} </p>
+                        <!-- <p><b> Time in progress </b> {{ today | date}} </p> -->
+                        <!-- <p><b> Time left: </b> {{  }} </p> -->
                         <p><b> Description: </b> <textarea>{{todoColItem.description}}</textarea></p>
-                        <p><b> Id: </b> {{todoColItem.id}} </p>               
+                        <!-- <p><b> Id: </b> {{todoColItem.id}} </p>                -->
                         <input type="button" class="btnMoveLeft" value="Back down" ng-click="moveLeft(todoColItem)"> 
                         <input type="button" class="btnMoveRigth" value="Done and remove" ng-click="doneAndRemove(todoColItem)">
                     </li>
