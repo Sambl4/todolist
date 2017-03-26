@@ -59,7 +59,7 @@ app.put('/todo/:id', function(req, res) {
         {
             id: req.body.id,
             status: req.body.status,
-            name: req.body.name,
+            name: req.body.todoName,
             deadline: req.body.deadline,
             priority: req.body.priority,
             priorityStat: req.body.priorityStat,

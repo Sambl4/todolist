@@ -6,117 +6,192 @@
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.1/angular.min.js"></script>
         
         <!-- Controllers -->
-        <script src="controllers/controllers.js"></script>
     </head>
 
     <body>
-        <div ng-controller="TodoListCtrl">
-            <div class="infoBlock">
-                <h3> To Do List </h3>
-                <p> {{today | date:'dd / MM.yyyy'}} </p>
 
-                <input type="button" class="btn" value="New task" ng-click="addFormVis = true"
-                    ng-init="addFormVis = addFormVis ? 'true' : 'false' ">
-            </div>
+        <section class="todoDesk" ng-controller="listsCtrl as listsCtrl">
 
-            <form class="formForAddTodo"
-                    ng-class="{'formForAddTodoVisible' : addFormVis == true, 'formForAddTodoNone' : addFormVis == false }">
-                
-                <p> <span>*</span>Name: </p>
-                <input type="text" ng-class="infoErr" placeholder="Enter name" ng-model="todoName">
-                
-                <p> <span>*</span>Deadline (Should be more than today): </p>
-                <input type="date" placeholder="Enter date" ng-class="infoErr" ng-model="todoDeadline">
-                
-                <p> <span>*</span>Priority: </p>
-                <select ng-model="todoPriority" ng-class="infoErr">
-                    <option>Normal</option>
-                    <option>Important</option>
-                    <option>Very important</option>
-                </select>
-                
-                <p> Description: </p>
-                <textarea type="text" placeholder="Add description" ng-model="todoDescription"></textarea>
+            <p>{{ listsCtrl.today | date }}</p>
+            <!-- <form   ng-submit="listsCtrl.addList()"> -->
+            <form>
+                <div ng-if="listsCtrl.isFull">
+                    <input type="text" ng-model="listsCtrl.listName" placeholder="add list name">
+                    <input type="button" class="btn" ng-click="listsCtrl.addList()" value="=>">
+                </div>
 
-                <input type="button" class="btn" value="Cancel" ng-click="addFormVis = false">
-                <input type="button" class="btn" value="Add new task" ng-click="addNew()" ng-mouseup="addFormVis = false">
-                
-                <p><span> * - Must be filled </span></p>
+                <div ng-if="!listsCtrl.isFull">
+                    <input type="text" ng-model="listsCtrl.listName" placeholder="!!!you can use only 5 lists!!!" ng-style="{border: '1px solid red'}">
+                    <input type="button" class="btn" ng-click="listsCtrl.checkFull()" value="><" ng-style="{color: 'red'}">
+                </div>
             </form>
 
-            <div class="todoDesk">
-            <!--  <input type="text" ng-model="search"> -->
-                <ul class="todoColomn"> 
-                    <h4> To Do </h4>
-                    <li ng-repeat="todoColItem in todoCol |  filter:'statusdata-todo' | orderBy: 'priorityStat'"
-                        ng-class="{'priorityImpotant' : todoColItem.priority == 'Important', 'priorityVeryImpotant' : todoColItem.priority == 'Very important' }">
+            
 
-                        <h3> {{todoColItem.name}} </h3>
-                        <p><b> Priority: {{ todoColItem.priority }} </b></p>
-                        <p><b> Registered: </b> {{ todoColItem.id | date: "dd.MMM.yyyy   /   HH:mm:ss"  }} </p>
-                        <p><b> Deadline: </b> {{ todoColItem.deadline | date: "dd.MMM.yyyy   /   HH:mm:ss"  }} </p>
-                        <!-- <p><b> Time in progress </b> {{ Date.now() - todoColItem.id | date: "dd.MMM.yyyy   /   HH:mm:ss"}} </p> -->
-                        <!-- <p><b> Time left: </b> {{ ( Date.parse(todoColItem.deadline) - Date.parse(todoColItem.id))/ 1000*3600*24 | date: "dd.MMM.yyyy   /   HH:mm:ss" }} </p> -->
-                        <p><b> Description: </b> <textarea>{{todoColItem.description}}</textarea></p>
-                        <!-- <p><b> Id: </b> {{todoColItem.id}} </p>     -->
-                        <input type="button" class="btnMoveRigth" value="Move on" ng-click="moveRight(todoColItem)">
-                    </li>
-                </ul>
 
-                <ul class="inProgressColomn"> 
-                    <h4> In progress </h4>
-                    <li ng-repeat="todoColItem in todoCol |  filter:'statusdata-inprogress' | orderBy: 'priorityStat'"
-                        ng-class="{'priorityImpotant' : todoColItem.priority == 'Important', 'priorityVeryImpotant' : todoColItem.priority == 'Very important' }">
-                        
-                        <h3> {{todoColItem.name}} </h3>
-                        <p><b> Priority:  {{ todoColItem.priority }} </b></p>
-                        <p><b> Registered: </b> {{ Date.parse("todoColItem.id") }} </p>
-                        <p><b> Deadline: </b> {{ todoColItem.deadline | date: "dd.MMM.yyyy   /   HH:mm:ss"  }} </p>
-                        <!-- <p><b> Time in progress </b> {{ today | date}} </p> -->
-                        <!-- <p><b> Time left: </b> {{  }} </p> -->
-                        <p><b> Description: </b> <textarea>{{todoColItem.description}}</textarea></p>
-                        <!-- <p><b> Id: </b> {{todoColItem.id}} </p>                  -->
-                        <input type="button" class="btnMoveLeft" value="Back down" ng-click="moveLeft(todoColItem)"> 
-                        <input type="button" class="btnMoveRigth" value="Move on" ng-click="moveRight(todoColItem)">
-                    </li>
-                </ul>
+            <ul class="todoColomn" 
+                ng-repeat="list in listsCtrl.lists"
+                ng-controller="listCtrl as listCtrl"
+                ng-init="listPosition = $index">
 
-                <ul class="testColomn"> 
-                    <h4> Test </h4>
-                    <li ng-repeat="todoColItem in todoCol |  filter:'statusdata-test' | orderBy: 'priorityStat'"
-                        ng-class="{'priorityImpotant' : todoColItem.priority == 'Important', 'priorityVeryImpotant' : todoColItem.priority == 'Very important' }">
-                        
-                        <h3> {{todoColItem.name}} </h3>
-                        <p><b> Priority:  {{ todoColItem.priority }} </b></p>
-                        <p><b> Registered: </b> {{ Date.parse("todoColItem.id") }} </p>
-                        <p><b> Deadline: </b> {{ todoColItem.deadline | date: "dd.MMM.yyyy   /   HH:mm:ss"  }} </p>
-                        <!-- <p><b> Time in progress </b> {{ today | date}} </p> -->
-                        <!-- <p><b> Time left: </b> {{  }} </p> -->
-                        <p><b> Description: </b> <textarea>{{todoColItem.description}}</textarea></p>
-                        <!-- <p><b> Id: </b> {{todoColItem.id}} </p>               -->
-                        <input type="button" class="btnMoveLeft" value="Back down" ng-click="moveLeft(todoColItem)"> 
-                        <input type="button" class="btnMoveRigth" value="Move on" ng-click="moveRight(todoColItem)">
-                    </li>
-                </ul>
+                <h2> {{list.listName}} </h2>
+                
+                <div class="btnBlock">
+                                    
+                    <input  type="button" class="btn" 
+                            value="New task" 
+                            ng-click="addFormVis = true"
+                            ng-init="addFormVis = addFormVis ? 'true' : 'false' ">
 
-                <ul class="doneColomn"> 
-                    <h4> Done </h4>
-                    <li ng-repeat="todoColItem in todoCol |  filter:'statusdata-done' | orderBy: 'priorityStat'"
-                        ng-class="{'priorityImpotant' : todoColItem.priority == 'Important', 'priorityVeryImpotant' : todoColItem.priority == 'Very important' }">
-                        
-                        <h3> {{todoColItem.name}} </h3>
-                        <p><b> Priority:  {{ todoColItem.priority }} </b></p>
-                        <p><b> Registered: </b> {{ Date.parse(todoColItem.id) }} </p>
-                        <p><b> Deadline: </b> {{ todoColItem.deadline | date: "dd.MMM.yyyy   /   HH:mm:ss"  }} </p>
-                        <!-- <p><b> Time in progress </b> {{ today | date}} </p> -->
-                        <!-- <p><b> Time left: </b> {{  }} </p> -->
-                        <p><b> Description: </b> <textarea>{{todoColItem.description}}</textarea></p>
-                        <!-- <p><b> Id: </b> {{todoColItem.id}} </p>                -->
-                        <input type="button" class="btnMoveLeft" value="Back down" ng-click="moveLeft(todoColItem)"> 
-                        <input type="button" class="btnMoveRigth" value="Done and remove" ng-click="doneAndRemove(todoColItem)">
-                    </li>
-                </ul>
-            </div>
-        </div>
+                    <input  type="button" class="btn btnWarning" 
+                            ng-click="listCtrl.isYouSureDelete = true" 
+                            value="Remove list">
+                </div>
+
+                <div    class="deleteNotice"
+                    ng-if="listCtrl.isYouSureDelete">
+                    <p><span> Are you sure you want to delete? </span></p>
+                    <input  type="button" class="btn" 
+                                ng-click="listCtrl.isYouSureDelete = false"  
+                                value="Cancel">
+                    <input  type="button" class="btn btnWarning" 
+                                ng-click="listCtrl.removeList(list)" 
+                                value="Remove list">
+                </div>
+                <form   class="formForAddTodo"
+                        ng-class="{'formForAddTodoVisible' : addFormVis == true, 'formForAddTodoNone' : addFormVis == false }">
+                    </br>
+                    <p> <span>*</span>Name: </p>
+
+                    <input  type="text" 
+                            ng-model="listCtrl.cardName" 
+                            placeholder="add name">
+
+                    <p> <span>*</span>Deadline (Should be more than today): </p>
+                    <input type="date" ng-model="listCtrl.cardDeadline">
+                    
+
+                    <p> Description: </p>
+                    <textarea type="text" ng-model="listCtrl.cardDescription" placeholder="add description"></textarea>
+                    <p> <span>*</span>Priority: 
+                    <select ng-model="listCtrl.cardPriority" ng-class="infoErr">
+                        <option>Normal</option>
+                        <option>Important</option>
+                        <option>Very important</option>
+                    </select>
+                    </p>
+                    <!-- <input type="text" ng-model="listCtrl.cardPriority"> -->
+                    <input  type="button" 
+                            class="btn" 
+                            value="Cancel" 
+                            ng-click="addFormVis = false">
+
+                    <input  type="button" 
+                            class="btn"    
+                            ng-click="listCtrl.createCard(list, listCtrl.addFormVis)" 
+                            value="click to create card" 
+                            ng-mouseup="addFormVis = false"
+                    >
+                    <p><span> * - Must be filled </span></p>
+                </form>
+                    
+                
+               <!--  <p> id: {{list.list_id}} </p>
+                <p> position: [{{$index +1}}]  </p>
+                <p> position2: [{{listPosition}}]  </p>
+                <p> previous: [{{listsCtrl.lists[$index-1].list_id}}]  </p>
+                <p> next: [{{listsCtrl.lists[$index+1].list_id}}]  </p>
+                <p> length: {{listsCtrl.lists.length}}    </p> -->
+                
+                <li ng-controller="cardCtrl as cardCtrl"
+                    ng-repeat="card in listCtrl.getCards(list) | filter: list.list_id | orderBy: 'priorityStat'"
+                    ng-class="{'priorityImpotant' : card.priority == 'Important', 'priorityVeryImpotant' : card.priority == 'Very important' }"
+                    ng-click="cardCtrl.isShortForm = !cardCtrl.isShortForm">
+
+                    <div ng-if="!cardCtrl.isEditing"> <!-- обычное состояние -->
+                        <h3> {{card.name}} </h3>
+
+                        <p  ng-if="!cardCtrl.isShortForm"><b> Priority: {{ card.priority }} </b></p>
+                        <p  ng-if="!cardCtrl.isShortForm"><b> Registered: </b> {{ card.id | date: "dd.MMM.yyyy"  }} </p>
+                        <p><b> Deadline: </b> {{ card.deadline | date: "dd.MMM.yyyy"  }} </p>
+                        <p  ng-if="!cardCtrl.isShortForm"><b> Description:</b> {{card.description}} </p>
+                        <!-- <p> status: {{card.status}} </p>
+                        <p> id: {{card.id}} </p> -->
+
+
+
+                        </br>
+                        <input  type="button" 
+                                class="btn btnMove" 
+                                ng-click="cardCtrl.moveLeftCard(card, 
+                                listPosition,
+                                listsCtrl.lists[listPosition-1].list_id)" 
+                                value="<">
+                        <input type="button" class="btn" ng-click="cardCtrl.editCard(card)" value="edit card ">
+                        <input type="button" class="btn btnWarning" ng-click="cardCtrl.deleteCard(card)" value="del card ">
+                        <input  type="button" 
+                                class="btn btnMove" 
+                                ng-click="cardCtrl.moveRightCard(card, 
+                                listPosition,
+                                listsCtrl.lists[listPosition+1].list_id,
+                                listsCtrl.lists.length)" 
+                                value=">">
+                    </div>
+
+                    <div ng-if="cardCtrl.isEditing"> <!-- состояние редактирования -->
+                        <form>
+                        <!-- <form ng-submit="cardCtrl.updateCard(card)">     -->
+                            <p> edit description </p>
+                            <textarea type="text" ng-model="cardCtrl.editingCard.description"></textarea>
+
+                           <!--  <p> edit deadline </p>
+                            <input  type="text" 
+                                    ng-model="cardCtrl.editingCard.deadline | date"
+                                    > -->
+                                    
+                            <p> edit priority </p>
+                            <select ng-model="cardCtrl.editingCard.priority">
+                                <option>Normal</option>
+                                <option>Important</option>
+                                <option>Very important</option>
+                            </select>        
+
+                            <select ng-model="cardCtrl.editingCard.list_id"
+                                    ng-change="cardCtrl.updateCard()"
+                                    ng-options="list.list_id as list.listName for list in listsCtrl.lists">
+                                <option value="">
+                                    --choose list--
+                                </option>
+                            </select>
+
+                        </form>
+
+                        <input type="button" class="btn" ng-click="cardCtrl.cancelEditCard(card)" value="cancel edit">
+                        <input type="button" class="btn" ng-click="cardCtrl.updateCard(card)" value="submit">
+                    </div>
+
+                  <!--     <input type="button" class="btn" ng-click="cardCtrl.editCard(card)" value="edit card ">
+                        <input type="button" class="btn" ng-click="cardCtrl.deleteCard(card)" value="del card "> -->
+                </li>
+
+
+
+            </ul>
+
+            
+            
+        </section>
+
+        <script src="js/app.js"></script>
+
+        <script src="js/controllers/listsCtrl.js"></script>   
+        <script src="js/controllers/listCtrl.js"></script> 
+        <script src="js/controllers/cardCtrl.js"></script>   
+
+        <script src="js/factory/listFactory.js"></script>   
+        <script src="js/factory/cardFactory.js"></script> 
+        <script src="js/factory/updateDBFactory.js"></script> 
+        <!-- <script src="js/directives/closeEditing.js"></script>            -->
+
     </body>
 </html>
