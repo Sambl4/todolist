@@ -19,7 +19,7 @@ angular.module('todoApp').controller('listsCtrl', function (listFactory, cardFac
 		updateDBFactory.pushNewTodoInBD(lists, cards);
 		// updateDBFactory.pushNewTodoInBD();
 		// $timeout(updateDB, 1000);
-		setTimeout (updateDB, 60000*5); //update every 5 minute 60000*5
+		setTimeout (updateDB, 60000); //update every 5 minute 60000*5
 	}
 
 	this.lists = listFactory.getLists();

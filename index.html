@@ -121,21 +121,23 @@
 
 
                         </br>
-                        <input  type="button" 
-                                class="btn btnMove" 
-                                ng-click="cardCtrl.moveLeftCard(card, 
-                                listPosition,
-                                listsCtrl.lists[listPosition-1].list_id)" 
-                                value="<">
-                        <input type="button" class="btn" ng-click="cardCtrl.editCard(card)" value="edit card ">
-                        <input type="button" class="btn btnWarning" ng-click="cardCtrl.deleteCard(card)" value="del card ">
-                        <input  type="button" 
-                                class="btn btnMove" 
-                                ng-click="cardCtrl.moveRightCard(card, 
-                                listPosition,
-                                listsCtrl.lists[listPosition+1].list_id,
-                                listsCtrl.lists.length)" 
-                                value=">">
+                        <div class="btnBlock">
+                            <input  type="button" 
+                                    class="btn btnMove" 
+                                    ng-click="cardCtrl.moveLeftCard(card, 
+                                    listPosition,
+                                    listsCtrl.lists[listPosition-1].list_id)" 
+                                    value="<">
+                            <input type="button" class="btn" ng-click="cardCtrl.editCard(card)" value="edit card ">
+                            <input type="button" class="btn btnWarning" ng-click="cardCtrl.deleteCard(card)" value="del card ">
+                            <input  type="button" 
+                                    class="btn btnMove" 
+                                    ng-click="cardCtrl.moveRightCard(card, 
+                                    listPosition,
+                                    listsCtrl.lists[listPosition+1].list_id,
+                                    listsCtrl.lists.length)" 
+                                    value=">">
+                        </div>
                     </div>
 
                     <div ng-if="cardCtrl.isEditing"> <!-- состояние редактирования -->
